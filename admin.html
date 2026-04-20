@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Blog</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Prevent default body layout for admin — uses flex centering */
+    body { display: flex; flex-direction: column; }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- ── Screen 1: Login ─────────────────────────────────────────────────── -->
+  <div id="login-screen" class="login-screen">
+    <pre class="terminal-header">
+ ██████╗ ██╗      ██████╗  ██████╗
+ ██╔══██╗██║     ██╔═══██╗██╔════╝
+ ██████╔╝██║     ██║   ██║██║  ███╗
+ ██╔══██╗██║     ██║   ██║██║   ██║
+ ██████╔╝███████╗╚██████╔╝╚██████╔╝
+ ╚═════╝ ╚══════╝ ╚═════╝  ╚═════╝
+    </pre>
+
+    <p class="login-title">&gt; BLOG_ADMIN <span>// authentication required</span></p>
+
+    <div class="input-group">
+      <span class="input-prompt">&gt;</span>
+      <input
+        type="password"
+        id="admin-password-input"
+        class="term-input"
+        placeholder="enter access code..."
+        autocomplete="current-password"
+        autofocus
+      >
+    </div>
+
+    <p class="login-error" id="login-error">&nbsp;</p>
+
+    <button class="term-btn" id="login-btn">[ AUTHENTICATE ]</button>
+  </div>
+
+  <!-- ── Screen 2: Admin Panel ───────────────────────────────────────────── -->
+  <div id="admin-panel" class="admin-panel" hidden>
+
+    <div class="admin-header">
+      <p class="admin-title">&gt; NEW_POST <span>// fill in the form below and hit publish</span></p>
+      <a href="index.html" class="admin-nav-link">&larr; view blog</a>
+    </div>
+
+    <form id="post-form" class="admin-form" autocomplete="off">
+
+      <!-- Title -->
+      <div class="form-group full">
+        <label class="form-label" for="post-title">TITLE <small>* required</small></label>
+        <input
+          type="text"
+          id="post-title"
+          class="form-input"
+          placeholder="Your post title..."
+          required
+          maxlength="200"
+        >
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label class="form-label" for="post-category">CATEGORY</label>
+        <select id="post-category" class="form-select">
+          <!-- Populated by admin.js from CONFIG.categories -->
+        </select>
+      </div>
+
+      <!-- Tags -->
+      <div class="form-group">
+        <label class="form-label" for="post-tags">TAGS <small>(comma separated)</small></label>
+        <input
+          type="text"
+          id="post-tags"
+          class="form-input"
+          placeholder="ai, chatgpt, openai..."
+        >
+      </div>
+
+      <!-- Excerpt -->
+      <div class="form-group full">
+        <label class="form-label" for="post-excerpt">EXCERPT <small>(short summary shown on home page, ~150 chars)</small></label>
+        <textarea
+          id="post-excerpt"
+          class="form-textarea"
+          rows="2"
+          maxlength="400"
+          placeholder="A brief description of this post shown on the home page..."
+        ></textarea>
+      </div>
+
+      <!-- Content -->
+      <div class="form-group full">
+        <label class="form-label" for="post-content">CONTENT <small>* required &mdash; plain text or basic HTML (&lt;b&gt;, &lt;i&gt;, &lt;a&gt;, &lt;br&gt;, &lt;h2&gt;, &lt;ul&gt;, etc.)</small></label>
+        <textarea
+          id="post-content"
+          class="form-textarea"
+          rows="22"
+          placeholder="Write your post here...
+
+You can write in plain paragraphs — just leave a blank line between paragraphs.
+
+You can also use basic HTML:
+&lt;b&gt;bold text&lt;/b&gt;
+&lt;i&gt;italic text&lt;/i&gt;
+&lt;a href=&quot;https://example.com&quot;&gt;a link&lt;/a&gt;
+&lt;h2&gt;A Section Heading&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Bullet point&lt;/li&gt;
+&lt;/ul&gt;"
+          required
+        ></textarea>
+      </div>
+
+      <!-- GitHub Token -->
+      <div class="form-group full">
+        <label class="form-label" for="github-token">GITHUB TOKEN <small>(stored in your browser — enter once)</small></label>
+        <input
+          type="password"
+          id="github-token"
+          class="form-input"
+          placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+          autocomplete="off"
+        >
+        <p class="token-hint">
+          Don't have a token?
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+Admin" target="_blank" rel="noopener">
+            Click here to generate one on GitHub
+          </a>
+          (select only the <strong>repo</strong> scope).
+        </p>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="form-group full">
+        <div class="status-bar idle" id="status-bar">&gt; Ready. Fill in the form and click Publish.</div>
+      </div>
+
+      <!-- Publish Button -->
+      <div class="form-group full">
+        <button type="submit" class="publish-btn" id="publish-btn">
+          [ PUBLISH POST ]
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Recent Posts -->
+    <div class="recent-posts">
+      <p class="recent-posts-title">&gt; RECENT POSTS (last 5)</p>
+      <div id="recent-posts-list">
+        <p style="color:var(--text-secondary);font-size:0.8rem;font-family:var(--font-mono)">Loading...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

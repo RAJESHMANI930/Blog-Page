@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="">
+  <meta property="og:description" content="">
+  <meta property="og:url" content="">
+  <title>Post</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <nav class="nav">
+        <a href="index.html" class="nav-brand">blog<span>_</span></a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="admin.html" class="nav-admin">[admin]</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Post Content -->
+  <div id="post-content" class="post-container">
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to all posts
+    </a>
+
+    <div class="post-meta-row">
+      <!-- Populated by app.js -->
+    </div>
+
+    <h1 class="post-title"></h1>
+
+    <div class="post-tags-row">
+      <!-- Populated by app.js -->
+    </div>
+
+    <hr class="post-divider">
+
+    <div class="post-body">
+      <!-- Populated by app.js -->
+    </div>
+
+    <div class="social-share">
+      <p>&gt; SHARE THIS POST</p>
+      <div class="share-buttons">
+        <!-- Populated by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Found State -->
+  <div id="post-not-found" class="post-container" hidden>
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to all posts
+    </a>
+    <div style="text-align:center;padding:64px 0;color:var(--text-secondary);font-family:var(--font-mono)">
+      <div style="font-size:2rem;margin-bottom:16px">404</div>
+      Post not found.
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span id="footer-name">blog_</span>
+        <span>Hosted free on <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.querySelector('.nav-brand').innerHTML = CONFIG.blogName.replace(' ', '<span>_</span>');
+    document.getElementById('footer-name').textContent = CONFIG.blogName + '_';
+  </script>
+</body>
+</html>
