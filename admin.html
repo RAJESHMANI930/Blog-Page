@@ -5,14 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — Blog</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Editor.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script>
+
   <style>
-    /* Prevent default body layout for admin — uses flex centering */
-    body { display: flex; flex-direction: column; }
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+    .admin-body { align-items: center; justify-content: center; }
+    .admin-panel { align-self: flex-start; }
   </style>
 </head>
 <body class="admin-body">
 
-  <!-- ── Screen 1: Login ─────────────────────────────────────────────────── -->
+  <!-- ── SCREEN 1: Login ────────────────────────────────────────────────────── -->
   <div id="login-screen" class="login-screen">
     <pre class="terminal-header">
  ██████╗ ██╗      ██████╗  ██████╗
@@ -20,149 +32,178 @@
  ██████╔╝██║     ██║   ██║██║  ███╗
  ██╔══██╗██║     ██║   ██║██║   ██║
  ██████╔╝███████╗╚██████╔╝╚██████╔╝
- ╚═════╝ ╚══════╝ ╚═════╝  ╚═════╝
-    </pre>
+ ╚═════╝ ╚══════╝ ╚═════╝  ╚═════╝</pre>
 
     <p class="login-title">&gt; BLOG_ADMIN <span>// authentication required</span></p>
-
     <div class="input-group">
       <span class="input-prompt">&gt;</span>
-      <input
-        type="password"
-        id="admin-password-input"
-        class="term-input"
-        placeholder="enter access code..."
-        autocomplete="current-password"
-        autofocus
-      >
+      <input type="password" id="admin-password-input" class="term-input"
+        placeholder="enter access code..." autocomplete="current-password" autofocus>
     </div>
-
     <p class="login-error" id="login-error">&nbsp;</p>
-
     <button class="term-btn" id="login-btn">[ AUTHENTICATE ]</button>
   </div>
 
-  <!-- ── Screen 2: Admin Panel ───────────────────────────────────────────── -->
+  <!-- ── SCREEN 2: Admin Panel ──────────────────────────────────────────────── -->
   <div id="admin-panel" class="admin-panel" hidden>
 
     <div class="admin-header">
-      <p class="admin-title">&gt; NEW_POST <span>// fill in the form below and hit publish</span></p>
+      <p class="admin-title">&gt; BLOG_ADMIN <span>// post manager</span></p>
       <a href="index.html" class="admin-nav-link">&larr; view blog</a>
     </div>
 
-    <form id="post-form" class="admin-form" autocomplete="off">
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="write">&#9997; WRITE</button>
+      <button class="admin-tab" data-tab="myposts">&#9776; MY POSTS</button>
+    </div>
 
-      <!-- Title -->
-      <div class="form-group full">
-        <label class="form-label" for="post-title">TITLE <small>* required</small></label>
-        <input
-          type="text"
-          id="post-title"
-          class="form-input"
-          placeholder="Your post title..."
-          required
-          maxlength="200"
-        >
+    <!-- ── TAB: WRITE ──────────────────────────────────────────────────────── -->
+    <div id="tab-write" class="tab-panel">
+
+      <!-- Draft resume banner -->
+      <div id="draft-banner" class="draft-banner" hidden>
+        <span>&gt; You have an unsaved draft. Resume it?</span>
+        <div class="draft-banner-btns">
+          <button class="draft-banner-btn" id="resume-draft-btn">[ RESUME ]</button>
+          <button class="draft-banner-btn dismiss" id="dismiss-draft-btn">[ DISCARD ]</button>
+        </div>
       </div>
 
-      <!-- Category -->
-      <div class="form-group">
-        <label class="form-label" for="post-category">CATEGORY</label>
-        <select id="post-category" class="form-select">
-          <!-- Populated by admin.js from CONFIG.categories -->
-        </select>
+      <!-- Edit mode banner -->
+      <div id="edit-mode-banner" class="edit-mode-banner" hidden>
+        <span>&gt; EDITING: <span id="edit-post-title-label"></span></span>
+        <button class="cancel-edit-btn" id="cancel-edit-btn">[ CANCEL EDIT ]</button>
       </div>
 
-      <!-- Tags -->
-      <div class="form-group">
-        <label class="form-label" for="post-tags">TAGS <small>(comma separated)</small></label>
-        <input
-          type="text"
-          id="post-tags"
-          class="form-input"
-          placeholder="ai, chatgpt, openai..."
-        >
+      <!-- Template Picker -->
+      <div class="template-section">
+        <p class="template-label">&gt; START WITH A TEMPLATE</p>
+        <div class="template-cards">
+          <button class="template-card" data-template="ai">🤖 AI Update</button>
+          <button class="template-card" data-template="tech">📰 Tech News</button>
+          <button class="template-card" data-template="opinion">💭 Opinion</button>
+          <button class="template-card" data-template="tutorial">📖 Tutorial</button>
+          <button class="template-card" data-template="quick">⚡ Quick Take</button>
+        </div>
       </div>
 
-      <!-- Excerpt -->
-      <div class="form-group full">
-        <label class="form-label" for="post-excerpt">EXCERPT <small>(short summary shown on home page, ~150 chars)</small></label>
-        <textarea
-          id="post-excerpt"
-          class="form-textarea"
-          rows="2"
-          maxlength="400"
-          placeholder="A brief description of this post shown on the home page..."
-        ></textarea>
+      <!-- Post Metadata Form -->
+      <div class="admin-form" style="margin-bottom:20px;">
+
+        <div class="form-group full">
+          <label class="form-label" for="post-title">TITLE <small>* required</small></label>
+          <input type="text" id="post-title" class="form-input"
+            placeholder="Your post title..." required maxlength="200">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="post-category">CATEGORY</label>
+          <select id="post-category" class="form-select"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="post-tags">TAGS <small>(comma separated)</small></label>
+          <input type="text" id="post-tags" class="form-input" placeholder="ai, chatgpt, news...">
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label" for="post-excerpt">EXCERPT <small>(shown on home page)</small></label>
+          <textarea id="post-excerpt" class="form-textarea" rows="2" maxlength="400"
+            placeholder="A short summary shown on the home page..."></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label" for="post-image">
+            FEATURED IMAGE URL <small>(optional — paste any image link)</small>
+          </label>
+          <input type="url" id="post-image" class="form-input"
+            placeholder="https://example.com/image.jpg">
+          <div id="image-preview" class="image-preview-wrap" hidden>
+            <img id="image-preview-img" src="" alt="Preview">
+          </div>
+        </div>
+
       </div>
 
-      <!-- Content -->
-      <div class="form-group full">
-        <label class="form-label" for="post-content">CONTENT <small>* required &mdash; plain text or basic HTML (&lt;b&gt;, &lt;i&gt;, &lt;a&gt;, &lt;br&gt;, &lt;h2&gt;, &lt;ul&gt;, etc.)</small></label>
-        <textarea
-          id="post-content"
-          class="form-textarea"
-          rows="22"
-          placeholder="Write your post here...
-
-You can write in plain paragraphs — just leave a blank line between paragraphs.
-
-You can also use basic HTML:
-&lt;b&gt;bold text&lt;/b&gt;
-&lt;i&gt;italic text&lt;/i&gt;
-&lt;a href=&quot;https://example.com&quot;&gt;a link&lt;/a&gt;
-&lt;h2&gt;A Section Heading&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Bullet point&lt;/li&gt;
-&lt;/ul&gt;"
-          required
-        ></textarea>
+      <!-- Block Editor -->
+      <div class="form-group full" style="margin-bottom:20px;">
+        <label class="form-label">&gt; CONTENT <small>— click anywhere to start, use + to add blocks</small></label>
+        <div id="editorjs-container"></div>
       </div>
 
       <!-- GitHub Token -->
-      <div class="form-group full">
-        <label class="form-label" for="github-token">GITHUB TOKEN <small>(stored in your browser — enter once)</small></label>
-        <input
-          type="password"
-          id="github-token"
-          class="form-input"
-          placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-          autocomplete="off"
-        >
-        <p class="token-hint">
-          Don't have a token?
-          <a href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+Admin" target="_blank" rel="noopener">
-            Click here to generate one on GitHub
-          </a>
-          (select only the <strong>repo</strong> scope).
-        </p>
+      <div class="admin-form" style="margin-bottom:20px;">
+        <div class="form-group full">
+          <label class="form-label" for="github-token">
+            GITHUB TOKEN <small>(stored in your browser — enter once)</small>
+          </label>
+          <input type="password" id="github-token" class="form-input"
+            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+          <p class="token-hint">
+            Don't have one?
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=Blog+Admin"
+               target="_blank" rel="noopener">Generate on GitHub</a>
+            — select only the <strong>repo</strong> scope.
+          </p>
+        </div>
       </div>
 
       <!-- Status Bar -->
-      <div class="form-group full">
-        <div class="status-bar idle" id="status-bar">&gt; Ready. Fill in the form and click Publish.</div>
+      <div class="status-bar idle" id="status-bar" style="margin-bottom:16px;">
+        &gt; Ready. Pick a template or start writing.
       </div>
 
-      <!-- Publish Button -->
-      <div class="form-group full">
-        <button type="submit" class="publish-btn" id="publish-btn">
-          [ PUBLISH POST ]
-        </button>
+      <!-- Action Buttons -->
+      <div class="admin-actions">
+        <button class="action-btn preview-btn"  id="preview-btn">[ PREVIEW ]</button>
+        <button class="action-btn draft-btn"    id="save-draft-btn">[ SAVE DRAFT ]</button>
+        <button class="action-btn publish-btn-new" id="publish-btn">[ PUBLISH POST ]</button>
       </div>
 
-    </form>
+    </div><!-- /tab-write -->
 
-    <!-- Recent Posts -->
-    <div class="recent-posts">
-      <p class="recent-posts-title">&gt; RECENT POSTS (last 5)</p>
-      <div id="recent-posts-list">
-        <p style="color:var(--text-secondary);font-size:0.8rem;font-family:var(--font-mono)">Loading...</p>
+    <!-- ── TAB: MY POSTS ───────────────────────────────────────────────────── -->
+    <div id="tab-myposts" class="tab-panel" hidden>
+      <div class="my-posts-header">
+        <span id="posts-count">&gt; Loading posts...</span>
+        <button class="action-btn" id="refresh-posts-btn"
+          style="flex:0;padding:6px 14px;font-size:0.75rem;">↻ Refresh</button>
+      </div>
+      <div id="my-posts-list">
+        <p style="color:var(--text-secondary);font-family:var(--font-mono);font-size:0.82rem">
+          Loading...
+        </p>
       </div>
     </div>
 
+  </div><!-- /admin-panel -->
+
+  <!-- ── Preview Modal ──────────────────────────────────────────────────────── -->
+  <div id="preview-overlay" class="preview-overlay" hidden>
+    <div class="preview-modal">
+      <button class="preview-close" id="preview-close-btn">[ CLOSE ]</button>
+      <p class="preview-label">&gt; POST PREVIEW</p>
+      <img id="preview-hero-img" src="" alt="" style="width:100%;max-height:320px;object-fit:cover;border-radius:6px;margin-bottom:24px;display:none;">
+      <h1 class="preview-title" id="preview-title"></h1>
+      <div class="post-body" id="preview-body"></div>
+    </div>
+  </div>
+
+  <!-- ── Confirm Delete Modal ───────────────────────────────────────────────── -->
+  <div id="confirm-overlay" class="confirm-overlay" hidden>
+    <div class="confirm-box">
+      <p>&gt; DELETE POST?<br><span id="confirm-post-title"></span><br><br>
+        This cannot be undone.</p>
+      <div class="confirm-btns">
+        <button class="confirm-yes" id="confirm-yes-btn">[ YES, DELETE ]</button>
+        <button class="confirm-no"  id="confirm-no-btn">[ CANCEL ]</button>
+      </div>
+    </div>
   </div>
 
   <script src="config.js"></script>
+  <script src="editor-tools.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

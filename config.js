@@ -5,7 +5,7 @@ const CONFIG = {
   authorName: "Rajesh",
 
   // ─── GitHub Details (fill these in after creating your GitHub repo) ──────────
-  githubUsername: "RAJESHMANI930",   // e.g. "rajesh123"
+  githubUsername: "rajeshmani930",   // e.g. "rajesh123"
   githubRepo: "myblog",                      // the repo name you create on GitHub
   githubBranch: "main",
 
